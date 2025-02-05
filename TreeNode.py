@@ -1,18 +1,8 @@
 import heapq #importing heap from python library
 import copy
 
-goal_state = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
 # moveType, change in row, change in column
 operators = [['up', -1, 0], ['down', 1, 0], ['left', 0, -1], ['right', 0, 1]]
-
-class Puzzle:
-    def __init__(self, initial_state, goal_state):
-        self.initial_state = initial_state
-        self.goal_state = goal_state
-
-    #check if current state matches goal state
-    def is_goal_state(self, state):
-        return state == self.goal_state
     
 
 class Node: 
@@ -21,15 +11,17 @@ class Node:
         #list to represent 8puzzle board
         self.state = state
         self.parent = parent 
+        self.length = len(state)
     
         
 #find the position of the blank tile
 #returns x (row) and y(column) for blank (0)
 def find_zero(state):
+    dim = len(state)
     #check rows
-    for row in range(3):
+    for row in range(dim):
         #check column
-        for column in range(3):
+        for column in range(dim):
             if state[row][column] == 0:
                 return row, column
             
