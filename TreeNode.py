@@ -45,4 +45,17 @@ def expand(node, operators):
 
     return children
 
+def add_to_set(set, node):
+    for i in set:
+        if node == i:
+            return;
+    set.append(node)
+
+def check_in_set(set, node):
+    for i in set:
+        if node == i:
+            return True;
+    return False
+
+
 

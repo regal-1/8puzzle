@@ -1,5 +1,6 @@
 import TreeNode
-
+from TreeNode import add_to_set
+from TreeNode import check_in_set
 # class Puzzle:
 #     def __init__(self, initial_state, goal_state):
 #         self.initial_state = initial_state
@@ -63,7 +64,7 @@ def init_default_puzzle_mode():
 def select_and_init_algorithm(puzzle):
     algorithm = input("Select algorithm. (1) for Uniform Cost Search, (2) for the Misplaced Tile Heuristic, "
                        "or (3) the Manhattan Distance Heuristic." + '\n')
-    if algorithm == "1":
+    if algorithm == "1": 
         general_search(puzzle, 1)
     if algorithm == "2":
         general_search(puzzle, 2)
@@ -96,42 +97,84 @@ def main():
             puzzle_row_one[i] = int(puzzle_row_one[i])
             puzzle_row_two[i] = int(puzzle_row_two[i])
             puzzle_row_three[i] = int(puzzle_row_three[i])
-            user_puzzle = [puzzle_row_one, puzzle_row_two, puzzle_row_three]
-            select_and_init_algorithm(user_puzzle)
+        user_puzzle = [puzzle_row_one, puzzle_row_two, puzzle_row_three]
+        select_and_init_algorithm(user_puzzle)
     return
 
 #my code
 def general_search(puzzle, queueing_function):
+    print_puzzle(puzzle)
     #queue of nodes
     nodes = []
     #dont want to visit same puzzle state more than once, using a set to avoid duplicates
-    visited_set = set()
+    visited_set = []
+    depth = 0;
     nodes.append(TreeNode.Node(puzzle))
-    
-    #debug set max limit 
-    max_limit = 5;
 
     #uniform cost search
     if queueing_function == 1:
-        while len(nodes) != 0 or len(nodes) < max_limit:
-            node = nodes.pop()
-            new_nodes = TreeNode.expand(node, TreeNode.operators);
-            visited_set.add(node);
-            print(f"Number of nodes visited: {len(visited_set)}")
+        #print_puzzle(puzzle)
+        while len(nodes) != 0:
+            node = nodes.pop(0)
+            #print_puzzle(node.state)
+            new_nodes = TreeNode.expand(node, TreeNode.operators)
+            depth += 1
+            add_to_set(visited_set, node)
+            print(f"Number of nodes visited: {len(visited_set)}, nodes_to_visit = {len(nodes)}")
             # check if we have already seen/visited this node state
             for i in new_nodes:
-                if i not in visited_set:
+                if not check_in_set(visited_set, i):
                     nodes.append(i)
                     print_puzzle(i.state)
                 if is_goal_state(i.state):
+                    print (f"Solution depth: {depth}")
                     return
                 
+    #misplaced_tile
+    if queueing_function == 2:
+        #print_puzzle(puzzle)
+        while len(nodes) != 0:
+            node = nodes.pop()
+            children = TreeNode.expand(node, TreeNode.operators)
+            depth += 1
+        for i in children:
+            i.cost = misplaced_tile_heuristic(i.state)
+            if is_goal_state(i.state):
+                print_puzzle(i.state)
+                print (f"Solution depth: {depth}")
+                return
+        nodes.append(find_least_cost(children))
 
+def find_least_cost(children):
+    cost = -1
+    node = None
+    for i in children:
+        if cost == -1 or i.cost < cost:
+            cost = i.cost
+            node = i
+    print ("find_least...")
+    print_puzzle(node.state)
+    return node
 
+def misplaced_tile_heuristic(puzzle):
+    dim = len(puzzle)
+    misplaced_tiles = 0
+    #check rows
+    for row in range(dim):
+        #check column
+        for column in range(dim):
+            if puzzle[row][column] != goal_state[row][column]:
+                misplaced_tiles += 1
+    print_puzzle(puzzle)
+    print(f"cost = {misplaced_tiles}")
+    return misplaced_tiles
 
+#def manhattan_distance_heuristic(puzzle):
+    #tbd
 
 #check if current state matches goal state
 def is_goal_state(state):
     return state == goal_state
+
 
 main()
