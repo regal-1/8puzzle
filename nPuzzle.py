@@ -114,7 +114,7 @@ def general_search(puzzle, queueing_function):
             cost, node = hq.heappop(q)
             #print_puzzle(node.state)
             if visited_set and check_in_set(visited_set, node):
-                print("node = ", node.depth, " seen ... continue ...");
+                #print("node = ", node.depth, " seen ... continue ...");
                 continue;
             add_to_set(visited_set, node)
             new_nodes = TreeNode.expand(node, TreeNode.operators)
@@ -139,7 +139,7 @@ def general_search(puzzle, queueing_function):
             parent_cost, node = hq.heappop(q)
             #print_puzzle(node.state)
             if visited_set and check_in_set(visited_set, node):
-                print("node = ", node.depth, " seen ... continue ...");
+                #print("node = ", node.depth, " seen ... continue ...");
                 continue;
             add_to_set(visited_set, node)
             new_nodes = TreeNode.expand(node, TreeNode.operators)
@@ -167,7 +167,7 @@ def general_search(puzzle, queueing_function):
             print_puzzle(node.state)
             #print_puzzle(node.state)
             if visited_set and check_in_set(visited_set, node):
-                print("node = ", node.depth, " seen ... continue ...");
+                #print("node = ", node.depth, " seen ... continue ...");
                 continue;
             add_to_set(visited_set, node)
             new_nodes = TreeNode.expand(node, TreeNode.operators)
