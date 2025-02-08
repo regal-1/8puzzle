@@ -20,10 +20,10 @@ class Node:
         if parent:
             self.depth = parent.depth + 1;
             t = parent
-            print("### ", self.state)
-            while t:
-                print ("parent depth = ", t.depth, "order = ", t.insert_order, t.state)
-                t = t.parent
+            # print("### ", self.state)
+            # while t:
+            #     print ("parent depth = ", t.depth, "order = ", t.insert_order, t.state)
+            #     t = t.parent
 
     def __lt__(self, other):
         return ((self.insert_order) < (other.insert_order))
@@ -78,7 +78,7 @@ def add_to_set(set, node):
 def check_in_set(set, node):
     for i in set:
         if match_states(node.state, i.state):
-            print(node.state, i.state) 
+            # print(node.state, i.state) 
             return True;
     return False
 

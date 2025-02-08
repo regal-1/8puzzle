@@ -122,14 +122,15 @@ def general_search(puzzle, queueing_function):
                 continue;
             new_nodes = TreeNode.expand(node, TreeNode.operators)
             add_to_set(visited_set, node)
-            print(f"Number of nodes visited: {len(visited_set)}, nodes_to_visit = {len(q)}")
+            #print(f"Number of nodes visited: {len(visited_set)}, nodes_to_visit = {len(q)}")
             # check if we have already seen/visited this node state
             for i in new_nodes:
                 if not check_in_set(visited_set, i):
                     hq.heappush(q, (0, i))
-                    print_puzzle(i.state)
+                    #print_puzzle(i.state)
                 if is_goal_state(i.state):
                     print (f"Solution depth: {i.depth}")
+                    print (f"Number of nodes expanded: {len(visited_set)}")
                     return
                 
     #misplaced_tile
@@ -137,14 +138,22 @@ def general_search(puzzle, queueing_function):
         #print_puzzle(puzzle)
         while len(q) != 0:
             cost, node = hq.heappop(q)
-            children = TreeNode.expand(node, TreeNode.operators)
-        for i in children:
-            i.cost = misplaced_tile_heuristic(i.state)
-            if is_goal_state(i.state):
-                print_puzzle(i.state)
-                print (f"Solution depth: {i.depth}")
-                return
-        hq.heappush(q, (0, find_least_cost(children)))
+            #print_puzzle(node.state)
+            if visited_set and check_in_set(visited_set, node):
+                print("node = ", node.depth, " seen ... continue ...");
+                continue;
+            add_to_set(visited_set, node)
+            new_nodes = TreeNode.expand(node, TreeNode.operators)
+            #print(f"Number of nodes visited: {len(visited_set)}, nodes_to_visit = {len(q)}")
+            # check if we have already seen/visited this node state
+            for i in new_nodes:
+                if not check_in_set(visited_set, i):
+                    hq.heappush(q, (0, i))
+                    #print_puzzle(i.state)
+                if is_goal_state(i.state):
+                    print (f"Solution depth: {i.depth}")
+                    print (f"Number of nodes expanded: {len(visited_set)}")
+                    return
 
 def find_least_cost(children):
     cost = -1
