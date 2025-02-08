@@ -158,6 +158,32 @@ def general_search(puzzle, queueing_function):
                     print (f"Solution depth: {i.depth}")
                     print (f"Number of nodes expanded: {len(visited_set)}")
                     return
+                
+    #manhattan distance
+    if queueing_function == 3:
+        cost, node = hq.heappop(q)
+        cost = manhattan_distance_heuristic(node.state)
+        hq.heappush(q, (cost, TreeNode.Node(puzzle)))
+        #print_puzzle(puzzle)
+        while len(q) != 0:
+            parent_cost, node = hq.heappop(q)
+            #print_puzzle(node.state)
+            if visited_set and check_in_set(visited_set, node):
+                print("node = ", node.depth, " seen ... continue ...");
+                continue;
+            add_to_set(visited_set, node)
+            new_nodes = TreeNode.expand(node, TreeNode.operators)
+            #print(f"Number of nodes visited: {len(visited_set)}, nodes_to_visit = {len(q)}")
+            # check if we have already seen/visited this node state
+            for i in new_nodes:
+                if not check_in_set(visited_set, i):
+                    cost = manhattan_distance_heuristic(i.state) + parent_cost
+                    hq.heappush(q, (cost, i))
+                    #print_puzzle(i.state)
+                if is_goal_state(i.state):
+                    print (f"Solution depth: {i.depth}")
+                    print (f"Number of nodes expanded: {len(visited_set)}")
+                    return
 
 def find_least_cost(children):
     cost = -1
@@ -183,8 +209,21 @@ def misplaced_tile_heuristic(puzzle):
     #print(f"cost = {misplaced_tiles}")
     return misplaced_tiles
 
-#def manhattan_distance_heuristic(puzzle):
-    #tbd
+def manhattan_distance_heuristic(puzzle):
+    dim = len(puzzle)
+    manhat_dist = 0
+    #check rows
+    for row in range(dim):
+        #check column
+        for column in range(dim):
+            if puzzle[row][column] > goal_state[row][column]:
+                manhat_dist += puzzle[row][column] - goal_state[row][column];
+            if puzzle[row][column] < goal_state[row][column]:
+                manhat_dist += goal_state[row][column] - puzzle[row][column];
+    #print_puzzle(puzzle)
+    #print(f"distance = {manhat_dist}")
+    return manhat_dist
+    
 
 #check if current state matches goal state
 def is_goal_state(state):
