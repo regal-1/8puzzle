@@ -26,7 +26,7 @@ doable = [[0, 1, 2],
 
 oh_boy = [[8, 7, 1],
           [6, 0, 2],
-          5, 4, 3]
+          [5, 4, 3]]
 
 #found impossible state from a google search
 impossible = [[8, 1, 2],
@@ -117,6 +117,9 @@ def general_search(puzzle, queueing_function):
         while len(q) != 0:
             cost, node = hq.heappop(q)
             #print_puzzle(node.state)
+            if visited_set and check_in_set(visited_set, node):
+                print("node = ", node.depth, " seen ... continue ...");
+                continue;
             new_nodes = TreeNode.expand(node, TreeNode.operators)
             add_to_set(visited_set, node)
             print(f"Number of nodes visited: {len(visited_set)}, nodes_to_visit = {len(q)}")

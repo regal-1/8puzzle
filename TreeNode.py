@@ -59,17 +59,29 @@ def expand(node, operators):
 
     return children
 
+def match_states(state1, state2):
+    dim = len(state1)
+    #check rows
+    for row in range(dim):
+        #check column
+        for column in range(dim):
+            if state1[row][column] != state2[row][column]:
+                return False;
+    return True
+
 def add_to_set(set, node):
     for i in set:
-        if node == i:
+        if match_states(node.state, i.state):
             return;
     set.append(node)
 
 def check_in_set(set, node):
     for i in set:
-        if node == i:
+        if match_states(node.state, i.state):
+            print(node.state, i.state) 
             return True;
     return False
+
 
 
 
