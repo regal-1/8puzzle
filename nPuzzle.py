@@ -1,6 +1,7 @@
 import TreeNode
 from TreeNode import add_to_set
 from TreeNode import check_in_set
+import heapq as hq
 # class Puzzle:
 #     def __init__(self, initial_state, goal_state):
 #         self.initial_state = initial_state
@@ -105,45 +106,42 @@ def main():
 def general_search(puzzle, queueing_function):
     print_puzzle(puzzle)
     #queue of nodes
-    nodes = []
+    q = []
     #dont want to visit same puzzle state more than once, using a set to avoid duplicates
     visited_set = []
-    depth = 0;
-    nodes.append(TreeNode.Node(puzzle))
+    hq.heappush(q, (0, TreeNode.Node(puzzle)))
 
     #uniform cost search
     if queueing_function == 1:
         #print_puzzle(puzzle)
-        while len(nodes) != 0:
-            node = nodes.pop(0)
+        while len(q) != 0:
+            cost, node = hq.heappop(q)
             #print_puzzle(node.state)
             new_nodes = TreeNode.expand(node, TreeNode.operators)
-            depth += 1
             add_to_set(visited_set, node)
-            print(f"Number of nodes visited: {len(visited_set)}, nodes_to_visit = {len(nodes)}")
+            print(f"Number of nodes visited: {len(visited_set)}, nodes_to_visit = {len(q)}")
             # check if we have already seen/visited this node state
             for i in new_nodes:
                 if not check_in_set(visited_set, i):
-                    nodes.append(i)
+                    hq.heappush(q, (0, i))
                     print_puzzle(i.state)
                 if is_goal_state(i.state):
-                    print (f"Solution depth: {depth}")
+                    print (f"Solution depth: {i.depth}")
                     return
                 
     #misplaced_tile
     if queueing_function == 2:
         #print_puzzle(puzzle)
-        while len(nodes) != 0:
-            node = nodes.pop()
+        while len(q) != 0:
+            cost, node = hq.heappop(q)
             children = TreeNode.expand(node, TreeNode.operators)
-            depth += 1
         for i in children:
             i.cost = misplaced_tile_heuristic(i.state)
             if is_goal_state(i.state):
                 print_puzzle(i.state)
-                print (f"Solution depth: {depth}")
+                print (f"Solution depth: {i.depth}")
                 return
-        nodes.append(find_least_cost(children))
+        hq.heappush(q, (0, find_least_cost(children)))
 
 def find_least_cost(children):
     cost = -1

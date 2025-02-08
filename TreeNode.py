@@ -7,12 +7,26 @@ operators = [['up', -1, 0], ['down', 1, 0], ['left', 0, -1], ['right', 0, 1]]
 
 class Node: 
     #default constructor for root node
-    def __init__(self, state, parent = None):
+    insert_order = 0
+    def __init__(self, state, parent = None, cost = 0):
         #list to represent 8puzzle board
         self.state = state
         self.parent = parent 
         self.length = len(state)
-    
+        self.cost = cost
+        self.depth = 0
+        self.insert_order = Node.insert_order
+        Node.insert_order += 1 
+        if parent:
+            self.depth = parent.depth + 1;
+            t = parent
+            print("### ", self.state)
+            while t:
+                print ("parent depth = ", t.depth, "order = ", t.insert_order, t.state)
+                t = t.parent
+
+    def __lt__(self, other):
+        return ((self.insert_order) < (other.insert_order))
         
 #find the position of the blank tile
 #returns x (row) and y(column) for blank (0)
