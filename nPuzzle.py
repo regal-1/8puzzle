@@ -2,10 +2,6 @@ import TreeNode
 from TreeNode import add_to_set
 from TreeNode import check_in_set
 import heapq as hq
-# class Puzzle:
-#     def __init__(self, initial_state, goal_state):
-#         self.initial_state = initial_state
-#         self.goal_state = goal_state
 
 # copied the menu from the sample code provided in the example project
 trivial = [[1, 2, 3],
@@ -107,7 +103,7 @@ def general_search(puzzle, queueing_function):
     print_puzzle(puzzle)
     #queue of nodes
     q = []
-    #dont want to visit same puzzle state more than once, using a set to avoid duplicates
+    #dont want to visit same puzzle state more than once 
     visited_set = []
     hq.heappush(q, (0, TreeNode.Node(puzzle)))
 
@@ -167,6 +163,8 @@ def general_search(puzzle, queueing_function):
         #print_puzzle(puzzle)
         while len(q) != 0:
             parent_cost, node = hq.heappop(q)
+            print(f"The best state to expand with g(n) = {parent_cost} and h(n) = {manhattan_distance_heuristic(node.state)} is: ")
+            print_puzzle(node.state)
             #print_puzzle(node.state)
             if visited_set and check_in_set(visited_set, node):
                 print("node = ", node.depth, " seen ... continue ...");
@@ -185,6 +183,7 @@ def general_search(puzzle, queueing_function):
                     print (f"Number of nodes expanded: {len(visited_set)}")
                     return
 
+#function to find the least cost route
 def find_least_cost(children):
     cost = -1
     node = None
@@ -192,8 +191,9 @@ def find_least_cost(children):
         if cost == -1 or i.cost < cost:
             cost = i.cost
             node = i
-    print ("find_least...")
-    print_puzzle(node.state)
+    #print(f"g(n) = {cost}")
+    #print ("find_least...")
+    #print_puzzle(node.state)
     return node
 
 def misplaced_tile_heuristic(puzzle):
@@ -209,6 +209,15 @@ def misplaced_tile_heuristic(puzzle):
     #print(f"cost = {misplaced_tiles}")
     return misplaced_tiles
 
+def position(curr):
+    dim = len(goal_state)
+    dist = 0    
+    for row in range(dim):
+        for column in range(dim):
+            if (curr) == goal_state[row][column]:
+                return row, column
+    
+
 def manhattan_distance_heuristic(puzzle):
     dim = len(puzzle)
     manhat_dist = 0
@@ -216,10 +225,16 @@ def manhattan_distance_heuristic(puzzle):
     for row in range(dim):
         #check column
         for column in range(dim):
-            if puzzle[row][column] > goal_state[row][column]:
-                manhat_dist += puzzle[row][column] - goal_state[row][column];
-            if puzzle[row][column] < goal_state[row][column]:
-                manhat_dist += goal_state[row][column] - puzzle[row][column];
+            if puzzle[row][column] != goal_state[row][column] and puzzle[row][column] != 0:
+                row1, column1 = position(puzzle[row][column])
+                if (row > row1 ):
+                    manhat_dist += row - row1
+                else:
+                    manhat_dist += row1 - row
+                if (column > column1 ): 
+                    manhat_dist += column - column1
+                else:
+                    manhat_dist += column1 - column
     #print_puzzle(puzzle)
     #print(f"distance = {manhat_dist}")
     return manhat_dist
@@ -228,6 +243,5 @@ def manhattan_distance_heuristic(puzzle):
 #check if current state matches goal state
 def is_goal_state(state):
     return state == goal_state
-
 
 main()
