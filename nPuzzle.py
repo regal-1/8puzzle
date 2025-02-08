@@ -120,8 +120,8 @@ def general_search(puzzle, queueing_function):
             if visited_set and check_in_set(visited_set, node):
                 print("node = ", node.depth, " seen ... continue ...");
                 continue;
-            new_nodes = TreeNode.expand(node, TreeNode.operators)
             add_to_set(visited_set, node)
+            new_nodes = TreeNode.expand(node, TreeNode.operators)
             #print(f"Number of nodes visited: {len(visited_set)}, nodes_to_visit = {len(q)}")
             # check if we have already seen/visited this node state
             for i in new_nodes:
@@ -135,9 +135,12 @@ def general_search(puzzle, queueing_function):
                 
     #misplaced_tile
     if queueing_function == 2:
+        cost, node = hq.heappop(q)
+        cost = misplaced_tile_heuristic(node.state)
+        hq.heappush(q, (cost, TreeNode.Node(puzzle)))
         #print_puzzle(puzzle)
         while len(q) != 0:
-            cost, node = hq.heappop(q)
+            parent_cost, node = hq.heappop(q)
             #print_puzzle(node.state)
             if visited_set and check_in_set(visited_set, node):
                 print("node = ", node.depth, " seen ... continue ...");
@@ -148,7 +151,8 @@ def general_search(puzzle, queueing_function):
             # check if we have already seen/visited this node state
             for i in new_nodes:
                 if not check_in_set(visited_set, i):
-                    hq.heappush(q, (0, i))
+                    cost = misplaced_tile_heuristic(i.state) + parent_cost
+                    hq.heappush(q, (cost, i))
                     #print_puzzle(i.state)
                 if is_goal_state(i.state):
                     print (f"Solution depth: {i.depth}")
@@ -175,8 +179,8 @@ def misplaced_tile_heuristic(puzzle):
         for column in range(dim):
             if puzzle[row][column] != goal_state[row][column]:
                 misplaced_tiles += 1
-    print_puzzle(puzzle)
-    print(f"cost = {misplaced_tiles}")
+    #print_puzzle(puzzle)
+    #print(f"cost = {misplaced_tiles}")
     return misplaced_tiles
 
 #def manhattan_distance_heuristic(puzzle):
