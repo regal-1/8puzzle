@@ -98,7 +98,8 @@ def main():
         select_and_init_algorithm(user_puzzle)
     return
 
-#my code
+#everything from here on is my own code
+#general search after selecting a queueing function
 def general_search(puzzle, queueing_function):
     print_puzzle(puzzle)
     #queue of nodes
@@ -189,7 +190,7 @@ def general_search(puzzle, queueing_function):
                     print (f"Number of nodes expanded: {len(visited_set)}")
                     return
 
-#function to find the least cost route
+#function to find the least cost 
 def find_least_cost(children):
     cost = -1
     node = None
@@ -215,6 +216,7 @@ def misplaced_tile_heuristic(puzzle):
     #print(f"cost = {misplaced_tiles}")
     return misplaced_tiles
 
+#find position of tile, use in manhat dist
 def position(curr):
     dim = len(goal_state)
     dist = 0    
@@ -223,7 +225,6 @@ def position(curr):
             if (curr) == goal_state[row][column]:
                 return row, column
     
-
 def manhattan_distance_heuristic(puzzle):
     dim = len(puzzle)
     manhat_dist = 0
