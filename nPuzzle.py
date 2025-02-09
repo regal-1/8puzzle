@@ -109,6 +109,8 @@ def general_search(puzzle, queueing_function):
 
     #uniform cost search
     if queueing_function == 1:
+        # print(f"The best state to expand with g(n) = {parent_cost} and h(n) = {find_least_cost(node.state)} is: ")
+        # print_puzzle(node.state)
         #print_puzzle(puzzle)
         while len(q) != 0:
             cost, node = hq.heappop(q)
@@ -117,6 +119,9 @@ def general_search(puzzle, queueing_function):
                 #print("node = ", node.depth, " seen ... continue ...");
                 continue;
             add_to_set(visited_set, node)
+            #debug statement to print after every 1000 bc it runs so slow
+            if len(visited_set)%1000 == 0:
+                print(len(visited_set))
             new_nodes = TreeNode.expand(node, TreeNode.operators)
             #print(f"Number of nodes visited: {len(visited_set)}, nodes_to_visit = {len(q)}")
             # check if we have already seen/visited this node state
@@ -137,7 +142,8 @@ def general_search(puzzle, queueing_function):
         #print_puzzle(puzzle)
         while len(q) != 0:
             parent_cost, node = hq.heappop(q)
-            #print_puzzle(node.state)
+            print(f"The best state to expand with g(n) = {parent_cost} and h(n) = {misplaced_tile_heuristic(node.state)} is: ")
+            print_puzzle(node.state)
             if visited_set and check_in_set(visited_set, node):
                 #print("node = ", node.depth, " seen ... continue ...");
                 continue;
@@ -203,7 +209,7 @@ def misplaced_tile_heuristic(puzzle):
     for row in range(dim):
         #check column
         for column in range(dim):
-            if puzzle[row][column] != goal_state[row][column]:
+            if puzzle[row][column] != goal_state[row][column] and puzzle[row][column] != 0:
                 misplaced_tiles += 1
     #print_puzzle(puzzle)
     #print(f"cost = {misplaced_tiles}")

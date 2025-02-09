@@ -69,12 +69,14 @@ def match_states(state1, state2):
                 return False;
     return True
 
+#add to set if not alr in the set
 def add_to_set(set, node):
     for i in set:
         if match_states(node.state, i.state):
             return;
     set.append(node)
 
+#check if node is alr in the set
 def check_in_set(set, node):
     for i in set:
         if match_states(node.state, i.state):
